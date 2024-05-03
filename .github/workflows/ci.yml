@@ -8,10 +8,10 @@ run-name: ${{ github.actor }} is update repo, start building...
 on:
   # push 推送
   push:
-    branches: ["gh-page"]
+    branches: ["main"]
   # PR 合并提交
   pull_request:
-    branches: ["gh-page"]
+    branches: ["main"]
 
   # 允许您从“操作”选项卡手动运行此工作流
   workflow_dispatch:
