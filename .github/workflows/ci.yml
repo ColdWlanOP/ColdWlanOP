@@ -32,17 +32,17 @@ jobs:
     steps:
       # 1 将代码仓库的内容拉取（或称为检出）到工作目录中，以便在下面的工作流程中使用
       - name: Checkout code (检出代码)
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # 2 安装 node 环境，并设置版本为 20
       - name: Setup Node.js (设置 node 版本)
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "20"
       # 3 安装 pnpm
       - name: Install pnpm (安装 pnpm)
         uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: "9"
       # 4 安装依赖
       - name: Install dependencies (安装依赖)
         run: pnpm install
@@ -65,8 +65,14 @@ jobs:
           path: "./dist"
 
 
-      # 9 部署 GitHub Pages
-      - name: Deploy to GitHub Pages(部署到 GitHub Pages)
-        uses: actions/deploy-pages@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
