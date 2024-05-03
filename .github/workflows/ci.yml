@@ -32,11 +32,11 @@ jobs:
       # 1 将代码仓库的内容拉取（或称为检出）到工作目录中，以便在下面的工作流程中使用
       - name: Checkout code (检出代码)
         uses: actions/checkout@v3
-      # 2 安装 node 环境，并设置版本为 16
+      # 2 安装 node 环境，并设置版本为 20
       - name: Setup Node.js (设置 node 版本)
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       # 3 安装 pnpm
       - name: Install pnpm (安装 pnpm)
         uses: pnpm/action-setup@v2
@@ -59,7 +59,7 @@ jobs:
         run: pnpm run build
       # 8 上传构建产物（actions/upload-artifact@v3 会上传工作流程中的文件，允许您在作业之间共享数据并在工作流程完成后存储数据）
       - name:  Upload build artifacts (上传构建产物)
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: "./dist"
 
