@@ -41,7 +41,7 @@ jobs:
       - name: Install pnpm (安装 pnpm)
         uses: pnpm/action-setup@v2
         with:
-          version: 9.0.6
+          version: 9
       # 4 安装依赖
       - name: Install dependencies (安装依赖)
         run: pnpm install
@@ -67,4 +67,4 @@ jobs:
       - name: Deploy to GitHub Pages(部署到 GitHub Pages)
         uses: actions/deploy-pages@v2
         with:
-          token: ${{ secrets.REPO_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
