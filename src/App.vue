@@ -6,6 +6,7 @@ import HelloWorld from '@com/HelloWorld.vue';
 </script>
 
 <template>
+  测试一下
   <HelloWorld msg="Vite + Vue" />
 </template>
 
