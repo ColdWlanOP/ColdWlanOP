@@ -1,52 +1,66 @@
-import { defineConfig } from "vitest/config";
-import vue from "@vitejs/plugin-vue";
-import Components from "unplugin-vue-components/vite";
-import AutoImport from "unplugin-auto-import/vite";
-import { normalizePath } from "vite";
-import { fileURLToPath } from "node:url";
+import type { UserConfig, ConfigEnv } from 'vite';
+import { loadEnv } from 'vite';
+import { resolve } from 'path';
+import { wrapperEnv } from './build/utils';
+import { createVitePlugins } from './build/vite/plugin';
+import { OUTPUT_DIR } from './build/constant';
+import { createProxy } from './build/vite/proxy';
+import pkg from './package.json';
+import { format } from 'date-fns';
+const { dependencies, devDependencies, name, version } = pkg;
 
+const __APP_INFO__ = {
+  pkg: { dependencies, devDependencies, name, version },
+  lastBuildTime: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+};
 
-function fromRoot(relativePath: string) {
-  return normalizePath(fileURLToPath(new URL(relativePath, import.meta.url)));
+function pathResolve(dir: string) {
+  return resolve(process.cwd(), '.', dir);
 }
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  mode: "development",
-  base: "/ColdWlanOP/",
-  plugins: [
-    vue(),
-    Components({
-      dts: "./src/unimport-com.d.ts",
-      dirs: ["src/components"],
-      extensions: ["vue"],
-    }),
-    AutoImport({
-      dts: "./src/unimport-api.d.ts",
-      imports: [
-        "vue-router",
-        "vue",
+export default ({ command, mode }: ConfigEnv): UserConfig => {
+  const root = process.cwd();
+  const env = loadEnv(mode, root);
+  const viteEnv = wrapperEnv(env);
+  const { VITE_PUBLIC_PATH, VITE_PORT, VITE_GLOB_PROD_MOCK, VITE_PROXY } =
+    viteEnv;
+  const prodMock = VITE_GLOB_PROD_MOCK;
+  const isBuild = command === 'build';
+  return {
+    base: VITE_PUBLIC_PATH,
+    esbuild: {},
+    resolve: {
+      alias: [
+        {
+          find: /\/#\//,
+          replacement: pathResolve('types') + '/',
+        },
+        {
+          find: '@',
+          replacement: pathResolve('src') + '/',
+        },
       ],
-    }),
-  ],
-  resolve: {
-    alias: {
-      "@assets": fromRoot("./src/assets"),
-      "@global": fromRoot("./src/global"),
-      "@util": fromRoot("./src/util"),
-      "@com": fromRoot("./src/components"),
+      dedupe: ['vue'],
     },
-  },
-  test: {
-        globals: true,
-        include: ["./__test__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-        environment: "happy-dom",
-      },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import "@global/inject.scss";`,
-      },
+    plugins: createVitePlugins(viteEnv, isBuild, prodMock),
+    define: {
+      __APP_INFO__: JSON.stringify(__APP_INFO__),
     },
-  }
-});
+    server: {
+      host: true,
+      port: VITE_PORT,
+      proxy: createProxy(VITE_PROXY),
+    },
+    optimizeDeps: {
+      include: [],
+      exclude: ['vue-demi'],
+    },
+    build: {
+      target: 'es2015',
+      cssTarget: 'chrome80',
+      outDir: OUTPUT_DIR,
+      reportCompressedSize: false,
+      chunkSizeWarningLimit: 2000,
+    },
+  };
+};
