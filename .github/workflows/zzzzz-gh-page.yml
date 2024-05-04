@@ -1,5 +1,5 @@
 # 1 工作流名称
-name: gh-page (项目页面发布)
+name: zzzzz-gh-page (项目页面发布)
 
 # 2 工作流执行名称
 run-name: ${{ github.actor }} is update repo, start building...
