@@ -63,8 +63,8 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       chunkSizeWarningLimit: 2000,
       rollupOptions: {
         input: {
-          'home_index': pathResolve('index.html'),
-          '404_index': pathResolve('404.html'),
+          'home_index': resolve(__dirname, 'index.html'),
+          '404_index': resolve(__dirname,'404.html'),
         }
       }
     },
