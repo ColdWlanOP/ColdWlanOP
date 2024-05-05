@@ -27,7 +27,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
   const prodMock = VITE_GLOB_PROD_MOCK;
   const isBuild = command === 'build';
   return {
-    base: VITE_PUBLIC_PATH,
+    base: VITE_PUBLIC_PATH.replace('//', '/'),
     esbuild: {},
     resolve: {
       alias: [
