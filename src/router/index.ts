@@ -44,7 +44,7 @@ export const asyncRoutes = [...routeModuleList];
 export const constantRouter: RouteRecordRaw[] = [LoginRoute, RootRoute, RedirectRoute];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.VITE_PUBLIC_PATH),
   routes: constantRouter,
   strict: true,
   scrollBehavior: () => ({ left: 0, top: 0 }),
