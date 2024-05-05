@@ -1,5 +1,5 @@
 import { App } from 'vue';
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import {createRouter, createWebHashHistory, createWebHistory, RouteRecordRaw} from 'vue-router';
 import { RedirectRoute } from '@/router/base';
 import { PageEnum } from '@/enums/pageEnum';
 import { createRouterGuards } from './guards';
@@ -44,7 +44,7 @@ export const asyncRoutes = [...routeModuleList];
 export const constantRouter: RouteRecordRaw[] = [LoginRoute, RootRoute, RedirectRoute];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.VITE_PUBLIC_PATH.replace('//', '/')),
+  history: import.meta.env.VITE_ROUTER_TYPE === 'history' ? createWebHistory(import.meta.env.VITE_PUBLIC_PATH.replace('//', '/')) : createWebHashHistory(import.meta.env.VITE_PUBLIC_PATH.replace('//', '/')),
   routes: constantRouter,
   strict: true,
   scrollBehavior: () => ({ left: 0, top: 0 }),
