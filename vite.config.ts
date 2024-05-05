@@ -61,6 +61,12 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       outDir: OUTPUT_DIR,
       reportCompressedSize: false,
       chunkSizeWarningLimit: 2000,
+      rollupOptions: {
+        input: {
+          'home_index': pathResolve('index.html'),
+          '404_index': pathResolve('404.html'),
+        }
+      }
     },
   };
 };
